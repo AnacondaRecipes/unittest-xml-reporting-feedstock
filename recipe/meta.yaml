@@ -1,47 +1,53 @@
 {% set name = "unittest-xml-reporting" %}
-{% set version = "3.2.0" %}
+{% set version = "4.0.0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: edd8d3170b40c3a81b8cf910f46c6a304ae2847ec01036d02e9c0f9b85762d28
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name|replace('-', '_') }}-{{ version }}.tar.gz
+  sha256: bfa1ed65e9e6f33c161d04470d89050458cfb65a5a5d0358834ef7ce037d9136
 
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: true  # [py<310]
+
 requirements:
   host:
     - pip
     - python
-    - setuptools
-    - wheel
+    - setuptools >=77
+    - setuptools-scm >=6.2.3
   run:
     - python
     - lxml
 
 test:
-  requires:
-    - pip
-  commands:
-    - pip check
+  source_files:
+    - tests
   imports:
     - xmlrunner
     - xmlrunner.extra
+  requires:
+    - pip
+    - pytest
+  commands:
+    - pip check
+    - pytest -v tests
 
 about:
-  home: https://github.com/xmlrunner/unittest-xml-reporting/tree/master/
+  home: https://github.com/xmlrunner/unittest-xml-reporting
   license: BSD-2-Clause
   license_family: BSD
   license_file: LICENSE
   summary: unittest-based test runner with Ant/JUnit like XML reporting.
   description:
-    A unittest test runner that can save test results to XML files in xUnit format. 
-    The files can be consumed by a wide range of tools, such as build systems, 
-    IDEs and continuous integration servers.
-  doc_url: https://pypi.org/project/unittest-xml-reporting/
+    - A unittest test runner that can save test results to XML files in xUnit format.
+    - The files can be consumed by a wide range of tools, such as build systems,
+    - IDEs and continuous integration servers.
+  doc_url: https://unittest-xml-reporting.readthedocs.io
   dev_url: https://github.com/xmlrunner/unittest-xml-reporting
 
 extra:
